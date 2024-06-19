@@ -37,7 +37,7 @@ const EventDetails = () => {
     return (
       <View style={styles.container}>
         <TouchableOpacity style={styles.goBackButton} onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left" size={20} color="#fff" />
+          <Icon name="arrow-left" size={20} color="#000" />
         </TouchableOpacity>
         <View style={styles.header}>
           <Text style={styles.headerText}>Event Details</Text>
@@ -100,9 +100,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   goBackButton: {
-    marginLeft: 5,
-    marginTop: 30,
-    marginBottom: 10,
+    marginLeft: 30,
+    marginTop: 45,
+    marginBottom: 5,
   },
   header: {
     alignItems: 'center',

@@ -248,9 +248,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   goBackButton: {
-    marginLeft: 5,
-    marginTop: 20,
-    marginBottom: 10,
+    marginLeft: 20,
+    marginTop: 40,
+    marginBottom: 5,
   },
   header: {
     alignItems: 'center',
