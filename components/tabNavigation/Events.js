@@ -13,7 +13,8 @@ import {
 import { Searchbar } from "react-native-paper";
 import Header from "../elements/Header";
 
-export default function EventsScreen({ navigation }) {
+
+const Events = () => {
   return (
     <ImageBackground style={styles.background}>
       <Header />
@@ -38,5 +39,21 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     flexGrow: 1,
   },
-  searchBar: { marginTop: 10 },
+  logoutButton: {
+    backgroundColor: "white",
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    alignItems: "center",
+    borderRadius: 20,
+    marginTop: 500,
+    margin: 100,
+    position: "relative",
+  },
+  logoutButtonText: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
 });
+
+export default Events;

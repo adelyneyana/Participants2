@@ -1,18 +1,19 @@
 import { View } from "react-native";
 import React from "react";
-import HomeStack from "./HomeStack";
-import EventsStack from "./EventsStack";
-import AboutStack from "./AboutStack";
-import ServicesStack from "./ServicesStack";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useNavigation } from "@react-navigation/native";
+
+import Home from "../tabNavigation/Home";
+import Events from "../tabNavigation/Events";
+import About from "../tabNavigation/About";
+import Services from "../tabNavigation/Services";
 
 const Tab = createBottomTabNavigator();
 
-export default function TabNavigation({ navigation }) {
+const Screen = () => {
   return (
-    <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
@@ -66,11 +67,12 @@ export default function TabNavigation({ navigation }) {
           tabBarLabel: "",
         })}
       >
-        <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Events" component={EventsStack} />
-        <Tab.Screen name="About" component={AboutStack} />
-        <Tab.Screen name="Services" component={ServicesStack} />
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Events" component={Events} />
+        <Tab.Screen name="About" component={About} />
+        <Tab.Screen name="Services" component={Services} />
       </Tab.Navigator>
-    </NavigationContainer>
   );
 }
+
+export default Screen;
