@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from "react-native-root-toast";
 
 const EventDetails = () => {
-  const [eventDetails, setEventDetails] = useState(null);
+  const [eventDetails, setEventDetails] = useState([]);
   const navigation = useNavigation();
   const route = useRoute();
   const { eventName } = route.params || {};
@@ -14,12 +14,14 @@ const EventDetails = () => {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        if (eventName) {
-          const jsonValue = await AsyncStorage.getItem(eventName);
-          if (jsonValue !== null) {
-            setEventDetails(JSON.parse(jsonValue));
-          }
-        }
+        const keys = await AsyncStorage.getAllKeys();
+        const events = await AsyncStorage.multiGet(keys);
+
+        const filteredEvents = events.map(([key, value]) => JSON.parse(value));
+        
+        filteredEvents.sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
+
+        setEventDetails(filteredEvents);
       } catch (e) {
         console.error('Error fetching event details:', e);
         showToast('Failed to fetch event details.');
@@ -27,25 +29,11 @@ const EventDetails = () => {
     };
 
     fetchEventDetails();
-  }, [eventName]);
+  }, []);
 
   const showToast = (message = "Something went wrong") => {
     Toast.show(message, 3000);
   };
-
-  if (!eventName) {
-    return (
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.goBackButton} onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left" size={20} color="#000" />
-        </TouchableOpacity>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Event Details</Text>
-        </View>
-        <Text style={styles.errorText}>No event details available. Please go back and book an event first.</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.eventDetailsPage}>
@@ -56,38 +44,46 @@ const EventDetails = () => {
         <View style={styles.header}>
           <Text style={styles.headerText}>Event Details</Text>
         </View>
-        <View style={styles.detailGroup}>
-          <Text style={styles.detailLabel}>Event Type:</Text>
-          <Text style={styles.detailValue}>{eventDetails.eventType}</Text>
-        </View>
-        <View style={styles.detailGroup}>
-          <Text style={styles.detailLabel}>Event Name:</Text>
-          <Text style={styles.detailValue}>{eventDetails.eventName}</Text>
-        </View>
-        <View style={styles.detailGroup}>
-          <Text style={styles.detailLabel}>Event Date:</Text>
-          <Text style={styles.detailValue}>{eventDetails.eventDate}</Text>
-        </View>
-        <View style={styles.detailGroup}>
-          <Text style={styles.detailLabel}>Venue Location:</Text>
-          <Text style={styles.detailValue}>{eventDetails.eventLocation}</Text>
-        </View>
-        <View style={styles.detailGroup}>
-          <Text style={styles.detailLabel}>Description:</Text>
-          <Text style={styles.detailValue}>{eventDetails.description}</Text>
-        </View>
-        <View style={styles.detailGroup}>
-          <Text style={styles.detailLabel}>Budget:</Text>
-          <Text style={styles.detailValue}>{`${eventDetails.budget[0]} - ${eventDetails.budget[1]}`}</Text>
-        </View>
-        <View style={styles.detailGroup}>
-          <Text style={styles.detailLabel}>Invitation Message:</Text>
-          <Text style={styles.detailValue}>{eventDetails.invitationMessage}</Text>
-        </View>
-        <View style={styles.detailGroup}>
-          <Text style={styles.detailLabel}>People to Invite:</Text>
-          <Text style={styles.detailValue}>{eventDetails.peopleToInvite}</Text>
-        </View>
+        {eventDetails.length === 0 ? (
+          <Text style={styles.errorText}>No events booked yet.</Text>
+        ) : (
+          eventDetails.map((event, index) => (
+            <View key={index} style={styles.eventContainer}>
+              <View style={styles.detailGroup}>
+                <Text style={styles.detailLabel}>Event Type:</Text>
+                <Text style={styles.detailValue}>{event.eventType}</Text>
+              </View>
+              <View style={styles.detailGroup}>
+                <Text style={styles.detailLabel}>Event Name:</Text>
+                <Text style={styles.detailValue}>{event.eventName}</Text>
+              </View>
+              <View style={styles.detailGroup}>
+                <Text style={styles.detailLabel}>Event Date:</Text>
+                <Text style={styles.detailValue}>{event.eventDate}</Text>
+              </View>
+              <View style={styles.detailGroup}>
+                <Text style={styles.detailLabel}>Venue Location:</Text>
+                <Text style={styles.detailValue}>{event.eventLocation}</Text>
+              </View>
+              <View style={styles.detailGroup}>
+                <Text style={styles.detailLabel}>Description:</Text>
+                <Text style={styles.detailValue}>{event.description}</Text>
+              </View>
+              <View style={styles.detailGroup}>
+                <Text style={styles.detailLabel}>Budget:</Text>
+                <Text style={styles.detailValue}>{`${event.budget[0]} - ${event.budget[1]}`}</Text>
+              </View>
+              <View style={styles.detailGroup}>
+                <Text style={styles.detailLabel}>Invitation Message:</Text>
+                <Text style={styles.detailValue}>{event.invitationMessage}</Text>
+              </View>
+              <View style={styles.detailGroup}>
+                <Text style={styles.detailLabel}>People to Invite:</Text>
+                <Text style={styles.detailValue}>{event.peopleToInvite}</Text>
+              </View>
+            </View>
+          ))
+        )}
       </ScrollView>
     </View>
   );
@@ -101,8 +97,8 @@ const styles = StyleSheet.create({
   },
   goBackButton: {
     marginLeft: 30,
-    marginTop: 45,
-    marginBottom: 5,
+    marginTop: 30,
+    marginBottom: 10,
   },
   header: {
     alignItems: 'center',
@@ -114,8 +110,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-  detailGroup: {
+  eventContainer: {
+    backgroundColor: '#333',
+    padding: 15,
+    borderRadius: 10,
     marginBottom: 20,
+  },
+  detailGroup: {
+    marginBottom: 10,
   },
   detailLabel: {
     color: '#e6b800',

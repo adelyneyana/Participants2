@@ -39,12 +39,27 @@ const BookEvent = () => {
     };
 
     try {
-      await AsyncStorage.setItem(eventName, JSON.stringify(bookedEvent));
-      navigation.navigate('EventDetails', { eventName: eventName });
+      // Generate a unique key for each event (e.g., using a timestamp)
+      const key = `@booked_events:${Date.now()}`;
+      await AsyncStorage.setItem(key, JSON.stringify(bookedEvent));
+      showToast('Event booked successfully!');
+      clearForm(); // Optionally clear the form after booking
     } catch (e) {
       console.error('Error saving event:', e);
       showToast('Failed to save event.');
     }
+  };
+
+  const clearForm = () => {
+    setEventType('');
+    setBudget([50000, 1000000]);
+    setSliderValues([50000, 1000000]);
+    setSelectedDate(null);
+    setEventName('');
+    setDescription('');
+    setVenueLocation('');
+    setInvitationMessage('');
+    setPeopleToInvite('');
   };
 
   const showToast = (message = "Something went wrong") => {
@@ -249,8 +264,8 @@ const styles = StyleSheet.create({
   },
   goBackButton: {
     marginLeft: 20,
-    marginTop: 40,
-    marginBottom: 5,
+    marginTop: 30,
+    marginBottom: 10,
   },
   header: {
     alignItems: 'center',
