@@ -19,7 +19,6 @@ const BookEvent = () => {
   const [invitationMessage, setInvitationMessage] = useState('');
   const [peopleToInvite, setPeopleToInvite] = useState('');
   const navigation = useNavigation();
-  const navigator = useNavigation();
 
   const saveEvent = async () => {
     if (!eventName || !eventType || !selectedDate || !description || !venueLocation || !invitationMessage || !peopleToInvite) {
@@ -89,12 +88,14 @@ const BookEvent = () => {
 
   return (
     <View style={styles.eventCreationPage}>
-      <TouchableOpacity style={styles.goBackButton} 
-        onPress={() => {
-          navigator.goBack();
-        }}>
+       <View style={styles.headerButtonsContainer}>
+      <TouchableOpacity style={styles.goBackButton} onPress={() => navigation.goBack()}>
         <Icon name="arrow-left" size={20} color="#fff" />
       </TouchableOpacity>
+      <TouchableOpacity style={styles.navigateButton} onPress={() => navigation.navigate('EventDetails')}>
+        <Icon name="calendar" size={20} color="#fff" />
+      </TouchableOpacity>
+    </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
@@ -262,10 +263,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#1e1e1e',
     padding: 10,
   },
-  goBackButton: {
-    marginLeft: 20,
-    marginTop: 30,
+  headerButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginTop: 18,
     marginBottom: 10,
+  },
+  goBackButton: {
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  navigateButton: {
+    backgroundColor: '#e6b800',
+    padding: 10,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  navigateButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   header: {
     alignItems: 'center',
