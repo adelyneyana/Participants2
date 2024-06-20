@@ -4,30 +4,26 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const Notification = ({ route }) => {
+const ConversationView = ({ route }) => {
   const navigation = useNavigation();
-  const { thread } = route.params || {};
+  const { contact } = route.params;
 
-  // State to hold messages
-  const [messages, setMessages] = useState([]);
-
-  // Effect to set initial messages when thread is available
-  useEffect(() => {
-    if (thread && thread.messages) {
-      setMessages(thread.messages);
-    }
-  }, [thread]);
+  const [messages, setMessages] = useState([
+    { id: 1, text: 'Hi', sender: 'other', timestamp: '2021-06-01T09:41:00Z' },
+    { id: 2, text: 'How are you?', sender: 'other', timestamp: '2021-06-01T09:42:00Z' },
+    { id: 3, text: 'Fine! What\'s your email?', sender: 'user', timestamp: '2021-06-01T09:43:00Z' },
+    { id: 4, text: 'Good Night.', sender: 'other', timestamp: '2021-06-01T09:44:00Z' }
+  ]);
 
   const [newMessage, setNewMessage] = useState('');
 
   const sendMessage = () => {
-    if (newMessage.trim() === '') {
-      return;
-    }
+    if (newMessage.trim() === '') return;
+
     const newMessageObj = {
       id: messages.length + 1,
       text: newMessage,
-      sender: 'user', // For simplicity, assuming user is sending all messages
+      sender: 'user',
       timestamp: new Date().toISOString(),
     };
     setMessages([...messages, newMessageObj]);
@@ -39,22 +35,18 @@ const Notification = ({ route }) => {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // Adjust as needed
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
-        {/* Header with back button */}
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.goBackButton}
-            onPress={() => {
-              navigation.goBack();
-            }}
+            onPress={() => navigation.goBack()}
           >
             <Icon name="arrow-left" size={20} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerText}>{thread?.senderName || 'Notification'}</Text>
+          <Text style={styles.headerText}>{contact.name}</Text>
         </View>
         
-        {/* Message thread */}
         <FlatList
           data={messages}
           keyExtractor={(item) => item.id.toString()}
@@ -70,14 +62,13 @@ const Notification = ({ route }) => {
             </View>
           )}
           contentContainerStyle={styles.messagesList}
-          inverted  // to show the latest message at the bottom
         />
         
-        {/* Input for new message */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.textInput}
             placeholder="Type a message..."
+            placeholderTextColor="#999"
             value={newMessage}
             onChangeText={setNewMessage}
             multiline
@@ -92,19 +83,18 @@ const Notification = ({ route }) => {
 };
 
 const formatTimestamp = (timestamp) => {
-  // Example format, adjust to your preference
   return new Date(timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#1c1c1c',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#e6b800',
+    backgroundColor: '#3e3e3e',
     paddingVertical: 10,
     paddingHorizontal: 20,
   },
@@ -128,18 +118,19 @@ const styles = StyleSheet.create({
   },
   userMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#DCF8C6',
+    backgroundColor: '#4a4a4a',
   },
   otherMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#E6E6E6',
+    backgroundColor: '#2a2a2a',
   },
   messageText: {
     fontSize: 16,
+    color: '#fff',
   },
   messageTimestamp: {
     fontSize: 12,
-    color: '#666666',
+    color: '#999999',
     marginTop: 5,
     alignSelf: 'flex-end',
   },
@@ -169,4 +160,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Notification;
+export default ConversationView;

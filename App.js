@@ -9,7 +9,9 @@ import LoginScreen from "./components/screens/LoginScreen";
 import Screen from "./components/screens/Screen";
 import BookEvent from "./components/screens/BookEvent";  
 import EventDetails from "./components/screens/EventDetails";
-import Notification from "./components/screens/Notification";
+import InboxView from "./components/screens/InboxView";
+import ConversationView from "./components/screens/ConversationView";
+import SelectContactView from "./components/screens/SelectContactView";
 
 const Stack = createNativeStackNavigator();
 
@@ -54,8 +56,18 @@ const App = () => {
             options={{ headerShown: false }}
           />
            <Stack.Screen
-            name="Notification"
-            component={Notification}
+            name="InboxView"
+            component={InboxView}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ConversationView"
+            component={ConversationView}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SelectContactView"
+            component={SelectContactView}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

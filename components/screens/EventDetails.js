@@ -17,9 +17,13 @@ const EventDetails = () => {
         const keys = await AsyncStorage.getAllKeys();
         const events = await AsyncStorage.multiGet(keys);
 
-        const filteredEvents = events.map(([key, value]) => JSON.parse(value));
-        
-        filteredEvents.sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
+        const filteredEvents = events.map(([key, value]) => {
+          const event = JSON.parse(value);
+          return { ...event, key };
+        });
+
+        // Sort the events based on the key (timestamp) in descending order
+        filteredEvents.sort((a, b) => parseInt(b.key.split(':')[1]) - parseInt(a.key.split(':')[1]));
 
         setEventDetails(filteredEvents);
       } catch (e) {
@@ -43,6 +47,7 @@ const EventDetails = () => {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Event Details</Text>
+          <Text style={styles.sub}>Booked Event</Text>
         </View>
         {eventDetails.length === 0 ? (
           <Text style={styles.errorText}>No events booked yet.</Text>
@@ -108,6 +113,11 @@ const styles = StyleSheet.create({
   headerText: {
     color: '#e6b800',
     fontSize: 24,
+    fontWeight: 'bold',
+  },
+  sub: {
+    color: '#fff',
+    fontSize: 18,
     fontWeight: 'bold',
   },
   eventContainer: {

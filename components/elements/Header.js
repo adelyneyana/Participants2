@@ -51,7 +51,7 @@ const Header = () => {
           <TouchableOpacity
             style={styles.sidebarItem}
             onPress={() => {
-              navigation.navigate("Notification");
+              navigation.navigate("InboxView");
               closeSidebar();
             }}
           >
